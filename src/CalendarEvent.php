@@ -12,7 +12,8 @@ class CalendarEvent implements JsonSerializable{
     private DateTime $fin;
     private string $type;
     private string $enseignement;
-    private string $enseignant;
+    private array $enseignants;
+    private array $groupes;
     private string $uec;
     private array $salles;
     private bool $effectue;
@@ -20,12 +21,13 @@ class CalendarEvent implements JsonSerializable{
     private string $commentaire;
     private DateInterval $heuresCumules;
 
-    public function __construct(DateTime $debut, DateTime $fin, string $type, string $enseignement, string $enseignant, array $salles, string $commentaire, bool $presentiel, bool $effectue, string $uec, DateInterval $heuresCumules){
+    public function __construct(DateTime $debut, DateTime $fin, string $type, string $enseignement, array $enseignants, array $salles, string $commentaire, bool $presentiel, bool $effectue, string $uec, DateInterval $heuresCumules, array $groupes){
         $this->debut = $debut;
         $this->fin = $fin;
         $this->type = $type;
         $this->enseignement = $enseignement;
-        $this->enseignant = $enseignant;
+        $this->enseignants = $enseignants;
+        $this->groupes = $groupes;
         $this->salles = $salles;
         $this->commentaire = $commentaire;
         $this->presentiel = $presentiel;
@@ -40,8 +42,9 @@ class CalendarEvent implements JsonSerializable{
             "fin" => $this->fin->format(DateTime::ISO8601),
             "type" => $this->type,
             "enseignement" => $this->enseignement,
-            "enseignant" => $this->enseignant,
+            "enseignants" => $this->enseignants,
             "salles" => $this->salles,
+            "groupes" => $this->groupes,
             "commentaire" => $this->commentaire,
             "effectue" => $this->effectue,
             "presentiel" => $this->presentiel,
