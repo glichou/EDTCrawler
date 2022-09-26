@@ -20,9 +20,9 @@ class EventParser{
     private DateInterval $heuresCumules;
     private string $type;
     private string $enseignement;
-    private string $enseignant;
+    private array $enseignants;
     private string $commentaire;
-    private array $salle;
+    private array $salles;
     private string $uec;
     private bool $effectue;
     private bool $presentiel;
@@ -34,9 +34,9 @@ class EventParser{
             $this->fin = $this->extractEndDate();
             $this->type = $this->extractType();
             $this->enseignement = $this->eventData["enseignement"];
-            $this->enseignant = $this->eventData["profs"] ?? "";
+            $this->enseignants = $this->extractEnseignants();
             $this->commentaire = $this->eventData["commentaire"] ?? "";
-            $this->salle = $this->extractSalle();
+            $this->salles = $this->extractSalle();
             $this->presentiel = $this->extractPresentiel();
             $this->effectue = $this->extractEffectue();
             $this->uec = $this->extractUEC();
@@ -46,14 +46,22 @@ class EventParser{
         }
     }
 
+    private function extractEnseignants(): array{
+        if(array_key_exists("profs", $this->eventData)){
+            $tab = explode('/', $this->eventData["profs"]); 
+            return array_map('trim', $tab);
+        }
+        return array();
+    }
+
     public function retrieveEvent(){
         return new CalendarEvent(
             $this->debut,
             $this->fin,
             $this->type,
             $this->enseignement,
-            $this->enseignant,
-            $this->salle,
+            $this->enseignants,
+            $this->salles,
             $this->commentaire,
             $this->presentiel,
             $this->effectue,
@@ -119,8 +127,12 @@ class EventParser{
     }
 
     private function extractSalle(): array{
+        //if(array_key_exists("salles", $this->eventData)){
+        //    return array_filter(preg_split(self::REGEX_SALLE, $this->eventData["salles"], 0));   
+        //}
         if(array_key_exists("salles", $this->eventData)){
-            return array_filter(preg_split(self::REGEX_SALLE, $this->eventData["salles"], 0));   
+            $tab = explode('/', $this->eventData["salles"]); 
+            return array_map('trim', $tab);
         }
         return array();
     }

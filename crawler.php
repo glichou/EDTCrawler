@@ -4,7 +4,7 @@ use Lichou\Calendar\CalendarCrawler;
 use Lichou\Calendar\EventParser;
 
 $crawler = new CalendarCrawler();
-$liste = $crawler->retrieveData("M1MIAA");
+$liste = $crawler->retrieveData("L3MIAA");
 
 $events = array();
 foreach($liste as $element){
