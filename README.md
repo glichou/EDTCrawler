@@ -8,21 +8,26 @@ Pour le moment, la seule fonctionnalité de ce script est de lister l'ensemble d
 ```
 [
    {
-      "debut":"2021-09-23T06:00:30+0000",
-      "fin":"2021-09-23T07:30:30+0000",
+      "debut":"2021-09-23T08:00:15+0000",
+      "fin":"2021-09-23T09:30:15+0000",
       "type":"CM",
       "enseignement":"RECHOP",
-      "enseignant":"Prenom NOM",
+      "enseignants":[
+         "Prénom NOM"
+      ],
       "salles":[
          "IBGBI-1-101",
          "IBGBI-1-103"
+      ],
+      "groupes":[
+         "SFA_M1 MIAGE CFA"
       ],
       "commentaire":"",
       "effectue":true,
       "presentiel":true,
       "uec":"UEC13",
-      "cumul":"13:30:00"
-   },
+      "cumul":"15:00:00"
+   }
 ]
 ```
 ## But

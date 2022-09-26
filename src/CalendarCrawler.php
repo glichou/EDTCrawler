@@ -34,8 +34,7 @@ class CalendarCrawler{
     }
 
     public function retrieveData(string $groupName){
-        $this->groupName = $groupName;
-        $this->login();
+        $this->login($groupName);
         $this->modulesList = $this->retrieveModules();
         //$this->modulesList = ["M1MIAA-FA-UEC13_RECHOP"];
         foreach($this->modulesList as $module){
@@ -44,7 +43,9 @@ class CalendarCrawler{
         return $this->coursesList;
     }
 
-    private function login(){
+    public function login(string $groupName){
+        $this->groupName = $groupName;
+
         // Accéder à la page d'acueil du site.
         $reponse = $this->browser->request("GET", self::BASE_URL . "/index.php");
 
@@ -53,11 +54,15 @@ class CalendarCrawler{
         $form['loginstudent'] = $this->groupName;
         $reponse = $this->browser->submit($form);
 
-        //Récuéper les informations du calendrier.
+        //Récupérer les informations du calendrier.
         $result = $reponse->filter('a[href$=".ics"]');
         $this->icsLink = ($result->count() > 0 && $result->getNode(0)->hasAttribute('href'))?$result->getNode(0)->getAttribute('href'):"";
         $result = $reponse->filter('input[name="current_student"]');
         $this->calendarId = ($result->count() > 0 && $result->getNode(0)->hasAttribute('value'))?$result->getNode(0)->getAttribute('value'):"";
+    }
+
+    public function retriveICS(){
+        return $this->icsLink;
     }
 
     public function retrieveModules(){

@@ -12,7 +12,8 @@ require 'vendor/autoload.php';
 class EventParser{
     private const REGEX_DATE = "/(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche) /u";
     private const REGEX_UEC = "/-(?<ec>(?:EC|(?:UE(?:C|T|D)))[0-9]{2,3})_/";
-    private const REGEX_SALLE = "/ (?=RFC|IBGBI|PEL|AX|BX|CX|1CY|IDF|MAU)/";
+    private const REGEX_SALLE = "/ (?=RFC|IBGBI|PEL|AX|BX|CX|1CY|IDF|MAU|IUT)/";
+    private const REGEX_GROUPE = "/ (?=(?:DSP|LAM|SFA|SHS|ST|ISTY|ISM|OVSQ)_)/";
 
     private array $eventData;
     private DateTime $debut;
@@ -21,6 +22,7 @@ class EventParser{
     private string $type;
     private string $enseignement;
     private array $enseignants;
+    private array $groupes;
     private string $commentaire;
     private array $salles;
     private string $uec;
@@ -35,6 +37,7 @@ class EventParser{
             $this->type = $this->extractType();
             $this->enseignement = $this->eventData["enseignement"];
             $this->enseignants = $this->extractEnseignants();
+            $this->groupes = $this->extractGroupes();
             $this->commentaire = $this->eventData["commentaire"] ?? "";
             $this->salles = $this->extractSalle();
             $this->presentiel = $this->extractPresentiel();
@@ -66,8 +69,28 @@ class EventParser{
             $this->presentiel,
             $this->effectue,
             $this->uec,
-            $this->heuresCumules
+            $this->heuresCumules,
+            $this->groupes
         );
+    }
+
+    //private function extractEnseignants(): array{
+    //    if(array_key_exists("profs", $this->eventData)){
+    //        return explode(" - ", $this->eventData["profs"]);
+    //    }
+    //    return array();
+    //}
+
+    private function extractGroupes(): array{
+        // Le découpage des groupes se fait avec le début de nom, SFA, SHS (comme pour les salles)
+        // le decoupage par tiret ne fonctionne pas. Pour voir la liste des domaine de formation
+        // voir : https://www.universite-paris-saclay.fr/formation/formation-en-alternance/les-formations-en-apprentissage#
+        // et https://www.univ-evry.fr/fileadmin/mediatheque/ueve-institutionnel/02_Formation/Etudes_et_Scolarite/pdf/annuaire_secretariats_pedagogiques_UFR_L1-L2.pdf
+        if(array_key_exists("groupes", $this->eventData)){
+            return array_filter(preg_split(self::REGEX_GROUPE, $this->eventData["groupes"], 0));   
+
+        }
+        return array();
     }
 
     private function extractPresentiel(): bool{
